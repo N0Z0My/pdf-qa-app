@@ -65,8 +65,8 @@ def get_pdf_text():
 def load_qdrant():
     #client = QdrantClient(path=QDRANT_PATH)
     client = QdrantClient(
-        url=os.environment['QDRANT_CLOUD_ENDPOINT'],
-        api_key=os.environment['QDRANT_CLOUD_API_KEY']
+        url=os.environ['QDRANT_CLOUD_ENDPOINT'],
+        api_key=os.environ['QDRANT_CLOUD_API_KEY']
     )
 
     # すべてのコレクション名を取得
