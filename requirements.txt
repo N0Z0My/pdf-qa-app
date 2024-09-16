@@ -1,1 +1,5 @@
 streamlit
+openai
+langchain
+PyPDF2
+qdrant-client
