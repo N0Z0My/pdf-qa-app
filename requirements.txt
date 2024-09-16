@@ -1,8 +1,5 @@
 streamlit
 langchain
-langchain_community
-openai
 PyPDF2
-pinecone-client
-tiktoken
-pycryptodome
+openai
+qdrant-client
