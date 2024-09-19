@@ -4,3 +4,4 @@ langchain_community
 PyPDF2
 openai
 qdrant-client
+tiktoken
