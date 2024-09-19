@@ -18,6 +18,15 @@ from qdrant_client.models import Distance, VectorParams
 QDRANT_PATH = "./local_qdrant"
 COLLECTION_NAME = "my_collection_2"
 
+# Everything is accessible via the st.secrets dict:
+#st.write("OPENAI_API_KEY:", st.secrets["OPENAI_API_KEY"])
+#st.write("DB password:", st.secrets["QDRANT_CLOUD_ENDPOINT"])
+
+# And the root-level secrets are also accessible as environment variables:
+#st.write(
+    #"Has environment variables been set:",
+    #os.environ["db_username"] == st.secrets["db_username"],
+#s)
 
 def init_page():
     st.set_page_config(
