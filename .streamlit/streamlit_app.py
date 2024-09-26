@@ -1,4 +1,3 @@
-import os
 # pip install pycryptodome
 from glob import glob
 import streamlit as st
@@ -64,11 +63,7 @@ def get_pdf_text():
 
 
 def load_qdrant():
-    #client = QdrantClient(path=QDRANT_PATH)
-    client = QdrantClient(
-        url=os.environ['QDRANT_CLOUD_ENDPOINT'],
-        api_key=os.environ['QDRANT_CLOUD_API_KEY']
-    )
+    client = QdrantClient(path=QDRANT_PATH)
 
     # すべてのコレクション名を取得
     collections = client.get_collections().collections
