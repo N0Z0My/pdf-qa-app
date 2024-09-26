@@ -162,7 +162,7 @@ def page_ask_my_pdf():
         if answer:
             with response_container:
                 st.markdown("## Answer")
-                st.write(answer.query)
+                st.write(answer["query"])
 
 
 def main():
