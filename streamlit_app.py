@@ -14,8 +14,51 @@ from langchain.chains import RetrievalQA
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
+import google_auth_httplib2
+import httplib2
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import HttpRequest
+
+
 QDRANT_PATH = "./local_qdrant"
 COLLECTION_NAME = "my_collection_2"
+
+SCOPE = "https://www.googleapis.com/auth/spreadsheets"
+SHEET_ID = "1EVALtIl2LrbtbsYhkiXAWuqqbxMM-vWlfz3rbA4ZYkM"
+SHEET_NAME = "pdf_q_answer"
+
+@st.experimental_singleton()
+def connect_to_gsheet():
+    # Create a connection object
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"], scopes=[SCOPE]
+    )
+
+    # Create a new Http() object for every request
+    def build_request(http, *args, **kwargs):
+        new_http = google_auth_httplib2.AuthorizedHttp(
+            credentials, http=httplib2.Http()
+        )
+
+        return HttpRequest(new_http, *args, **kwargs)
+
+    authorized_http = google_auth_httplib2.AuthorizedHttp(
+        credentials, http=httplib2.Http()
+    )
+
+    service = build("sheets", "v4", requestBuilder=build_request, http=authorized_http)
+    gsheet_connector = service.spreadsheets()
+
+    return gsheet_connector
+
+def add_row_to_gsheet(gsheet_connector, row):
+    gsheet_connector.values().append(
+        spreadsheetId=SHEET_ID,
+        range=f"{SHEET_NAME}!A:C",
+        body=dict(values=row),
+        valueInputOption="USER_ENTERED",
+    ).execute()
 
 
 def init_page():
@@ -158,10 +201,12 @@ def page_ask_my_pdf():
             with response_container:
                 st.markdown("## Answer")
                 st.write(answer)
+                add_row_to_gsheet(gsheet_connector, [answer])
 
 
 def main():
     init_page()
+    gsheet_connector = connect_to_gsheet()
 
     selection = st.sidebar.radio("Go to", ["PDF Upload", "Ask My PDF(s)"])
     if selection == "PDF Upload":
