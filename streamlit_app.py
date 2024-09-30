@@ -32,7 +32,7 @@ SHEET_NAME = "pdf_q_answer"
 def connect_to_gsheet():
     # Create a connection object
     credentials = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"], scopes=[SCOPE]
+        st.secrets["connections.gcs"], scopes=[SCOPE]
     )
 
     # Create a new Http() object for every request
