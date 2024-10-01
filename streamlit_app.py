@@ -26,7 +26,7 @@ QDRANT_PATH = "./local_qdrant"
 COLLECTION_NAME = "my_collection_2"
 
 SCOPE = "https://www.googleapis.com/auth/spreadsheets"
-SHEET_ID = "1EVALtIl2LrbtbsYhkiXAWuqqbxMM-vWlfz3rbA4ZYkM"
+SHEET_ID = "16V9me0ByryDXxsupaVGlzB1fvWsQZ8EDw8CaO94AfiU"
 SHEET_NAME = "pdf_q_answer"
 
 @st.cache_resource(ttl=1)
