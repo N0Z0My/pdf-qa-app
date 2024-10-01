@@ -75,16 +75,16 @@ def add_row_to_gsheet(gsheet_connector, row):
         for i in range(0, len(lines), 4):  # 4行ごとに処理（質問、選択肢A、選択肢B、回答）
             if i + 3 < len(lines):
                 question = lines[i].strip()
-                options = lines[i + 1].strip() + ' ' + lines[i + 2].strip()
+                options = lines[i + 1].strip() + '\n' + lines[i + 2].strip()
                 answer = lines[i + 3].strip()
                 
-                formatted_row.extend([question, options, answer])
+                formatted_row.extend([f"{question}\n{options}", answer])
         
-        # 9列になるようにパディング
-        formatted_row.extend([''] * (9 - len(formatted_row)))
+        # 6列になるようにパディング
+        formatted_row.extend([''] * (6 - len(formatted_row)))
 
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
-        range_spec = f"{encoded_sheet_name}!A1:I1"
+        range_spec = f"{encoded_sheet_name}!A1:F1"
         
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
@@ -97,7 +97,7 @@ def add_row_to_gsheet(gsheet_connector, row):
     except Exception as e:
          st.error(f"Error in add_row_to_gsheet: {str(e)}")
          st.exception(e)
-         
+
 def init_page():
     st.set_page_config(
         page_title="Ask My PDF(s)",
