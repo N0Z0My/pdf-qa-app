@@ -58,6 +58,17 @@ def connect_to_gsheet():
 
 def add_row_to_gsheet(gsheet_connector, row):
     try:
+        # シートの存在を確認
+        sheet_metadata = gsheet_connector.get(spreadsheetId=SHEET_ID).execute()
+        sheets = sheet_metadata.get('sheets', [])
+        sheet_names = [sheet['properties']['title'] for sheet in sheets]
+        
+        st.write(f"Debug - Available sheets: {sheet_names}")
+        
+        if SHEET_NAME not in sheet_names:
+            st.error(f"Sheet '{SHEET_NAME}' not found in the spreadsheet.")
+            return
+    try:
         string_row = [str(item) if item is not None else '' for item in row]
         
         st.write(f"Debug - SHEET_ID: {SHEET_ID}")
@@ -65,7 +76,7 @@ def add_row_to_gsheet(gsheet_connector, row):
         st.write(f"Debug - Row data: {string_row}")
         
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME, safe='')
-        range_spec = f"'{encoded_sheet_name}'!A:C"
+        range_spec = "pdf_q_answer!A:C"
         
         st.write(f"Debug - Encoded range: {range_spec}")
         
