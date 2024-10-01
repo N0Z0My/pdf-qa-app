@@ -74,7 +74,7 @@ def add_row_to_gsheet(gsheet_connector, row):
         
         for i in range(0, min(len(lines), 15), 5):  # 最大3つの質問に対応（各質問は5行）
             question = lines[i].strip()
-            options = f"a) {lines[i + 1].strip()}\nb) {lines[i + 2].strip()}\nc) {lines[i + 3].strip()}"
+            options = f"{lines[i + 1].strip()}\n{lines[i + 2].strip()}\n{lines[i + 3].strip()}"
             full_question = f"{question}\n{options}"
             answer = lines[i + 4].strip()
             
@@ -96,7 +96,7 @@ def add_row_to_gsheet(gsheet_connector, row):
     except Exception as e:
          st.error(f"Error in add_row_to_gsheet: {str(e)}")
          st.exception(e)
-         
+
 def init_page():
     st.set_page_config(
         page_title="Ask My PDF(s)",
