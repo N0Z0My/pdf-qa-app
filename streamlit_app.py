@@ -66,31 +66,30 @@ def add_row_to_gsheet(gsheet_connector, row):
             st.error(f"Sheet '{SHEET_NAME}' not found in the spreadsheet.")
             return
 
-        current_time, content = row
+        _, content = row
         
         # 質問と回答を分離して整形
         lines = content.split('\n')
-        formatted_row = []
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            if line.startswith('質問'):
-                question = line
-                if i + 1 < len(lines):
-                    options = lines[i + 1].strip()
-                else:
-                    options = ""
-                if i + 2 < len(lines):
-                    answer = lines[i + 2].strip()
-                else:
-                    answer = ""
-                formatted_row.extend([question, options, answer])
-                i += 3
-            else:
-                i += 1
+        formatted_row = [''] * 9  # 9列分の空の要素を用意
+        question_count = 0
+        
+        for i in range(0, len(lines), 3):
+            if i + 2 < len(lines):
+                question = lines[i].strip()
+                options = lines[i + 1].strip()
+                answer = lines[i + 2].strip()
+                
+                if question.startswith('質問'):
+                    formatted_row[question_count * 3] = question
+                    formatted_row[question_count * 3 + 1] = options
+                    formatted_row[question_count * 3 + 2] = answer
+                    question_count += 1
+                
+                if question_count >= 3:
+                    break
 
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
-        range_spec = f"{encoded_sheet_name}!A1:I1"  # 最大9列（3つの質問、選択肢、回答）
+        range_spec = f"{encoded_sheet_name}!A1:I1"
         
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
