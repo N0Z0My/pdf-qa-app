@@ -203,6 +203,8 @@ def page_ask_my_pdf(gsheet_connector):
             with response_container:
                 st.markdown("## Answer")
                 st.write(answer)
+                st.write("Type of answer:", type(answer))  # デバッグ用
+                st.write("Content of answer:", answer)  # デバッグ用
                 add_row_to_gsheet(gsheet_connector, [answer])
 
 
