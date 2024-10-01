@@ -1,4 +1,5 @@
 # pip install pycryptodome
+import urllib.parse
 from datetime import datetime
 from glob import glob
 import streamlit as st
@@ -63,9 +64,14 @@ def add_row_to_gsheet(gsheet_connector, row):
         st.write(f"Debug - SHEET_NAME: {SHEET_NAME}")
         st.write(f"Debug - Row data: {string_row}")
         
+        encoded_sheet_name = urllib.parse.quote(SHEET_NAME, safe='')
+        range_spec = f"'{encoded_sheet_name}'!A:C"
+        
+        st.write(f"Debug - Encoded range: {range_spec}")
+        
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
-            range=f"'{SHEET_NAME}'!A:C",
+            range=range_spec,
             body=dict(values=[string_row]),
             valueInputOption="USER_ENTERED",
         ).execute()
@@ -74,7 +80,7 @@ def add_row_to_gsheet(gsheet_connector, row):
         st.success("Data successfully added to Google Sheets")
     except Exception as e:
         st.error(f"Error in add_row_to_gsheet: {str(e)}")
-        st.exception(e)
+        st.exception(e)   
 
 def init_page():
     st.set_page_config(
