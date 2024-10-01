@@ -1,4 +1,5 @@
 # pip install pycryptodome
+from datetime import datetime
 from glob import glob
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
@@ -55,12 +56,20 @@ def connect_to_gsheet():
     #return gsheet_connector
 
 def add_row_to_gsheet(gsheet_connector, row):
-    gsheet_connector.values().append(
-        spreadsheetId=SHEET_ID,
-        range=f"{SHEET_NAME}!A:C",
-        body=dict(values=[row]),
-        valueInputOption="USER_ENTERED",
-    ).execute()
+    try:
+        # 各項目を文字列に変換
+        string_row = [str(item) if item is not None else '' for item in row]
+        
+        gsheet_connector.values().append(
+            spreadsheetId=SHEET_ID,
+            range=f"{SHEET_NAME}!A:C",
+            body=dict(values=[string_row]),
+            valueInputOption="USER_ENTERED",
+        ).execute()
+        st.success("Data successfully added to Google Sheets")
+    except Exception as e:
+        st.error(f"Error in add_row_to_gsheet: {str(e)}")
+        st.exception(e)
 
 
 def init_page():
@@ -202,10 +211,14 @@ def page_ask_my_pdf(gsheet_connector):
         if answer:
             with response_container:
                 st.markdown("## Answer")
-                st.write(answer)
-                st.write("Type of answer:", type(answer))  # デバッグ用
-                st.write("Content of answer:", answer)  # デバッグ用
-                add_row_to_gsheet(gsheet_connector, [answer])
+                result = answer.get('result', '')  # 'result' キーの値を取得
+                st.write(result)
+            
+            # Google Sheets に追加するデータを準備
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            row_data = [current_time, query, result]
+            
+            add_row_to_gsheet(gsheet_connector, row_data)
 
 
 def main():
