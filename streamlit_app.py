@@ -58,7 +58,7 @@ def add_row_to_gsheet(gsheet_connector, row):
     gsheet_connector.values().append(
         spreadsheetId=SHEET_ID,
         range=f"{SHEET_NAME}!A:C",
-        body=dict(values=row),
+        body=dict(values=[row]),
         valueInputOption="USER_ENTERED",
     ).execute()
 
@@ -214,7 +214,7 @@ def main():
     if selection == "PDF Upload":
         page_pdf_upload_and_build_vector_db()
     elif selection == "Ask My PDF(s)":
-        page_ask_my_pdf()
+        page_ask_my_pdf(gsheet_connector)
 
     costs = st.session_state.get('costs', [])
     st.sidebar.markdown("## Costs")
