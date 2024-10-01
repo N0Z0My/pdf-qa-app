@@ -58,41 +58,40 @@ def connect_to_gsheet():
 
 def add_row_to_gsheet(gsheet_connector, row):
     try:
-        # スプレッドシートの情報を取得
         sheet_metadata = gsheet_connector.get(spreadsheetId=SHEET_ID).execute()
         sheets = sheet_metadata.get('sheets', [])
         sheet_names = [sheet['properties']['title'] for sheet in sheets]
-        
-        #st.write(f"Debug - Available sheets: {sheet_names}")
-        #st.write(f"Debug - Target sheet name: {SHEET_NAME}")
         
         if SHEET_NAME not in sheet_names:
             st.error(f"Sheet '{SHEET_NAME}' not found in the spreadsheet.")
             return
 
-        string_row = [str(item) if item is not None else '' for item in row]
+        current_time, content = row
         
-        #st.write(f"Debug - SHEET_ID: {SHEET_ID}")
-        #st.write(f"Debug - SHEET_NAME: {SHEET_NAME}")
-        #st.write(f"Debug - Row data: {string_row}")
-        
+        # 質問と回答を分離して整形
+        lines = content.split('\n')
+        formatted_row = []
+        for line in lines:
+            if line.startswith('質問'):
+                question = line
+                options = next(lines).strip()
+                answer = next(lines).strip()
+                formatted_row.extend([question, options, answer])
+
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
-        range_spec = f"{encoded_sheet_name}!A1:C1"
-        
-        #st.write(f"Debug - Encoded range: {range_spec}")
+        range_spec = f"{encoded_sheet_name}!A1:I1"  # 最大9列（3つの質問、選択肢、回答）
         
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
             range=range_spec,
-            body=dict(values=[string_row]),
+            body=dict(values=[formatted_row]),
             valueInputOption="USER_ENTERED",
         ).execute()
         
-        #st.write(f"Debug - API response: {result}")
         st.success("Data successfully added to Google Sheets")
     except Exception as e:
          st.error(f"Error in add_row_to_gsheet: {str(e)}")
-         st.exception(e)   
+         st.exception(e)
 
 def init_page():
     st.set_page_config(
@@ -238,8 +237,8 @@ def page_ask_my_pdf(gsheet_connector):
             
             # Google Sheets に追加するデータを準備
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            row_data = [current_time, query, result]
-            
+            row_data = [current_time, result]
+    
             add_row_to_gsheet(gsheet_connector, row_data)
 
 
