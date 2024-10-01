@@ -80,7 +80,7 @@ def add_row_to_gsheet(gsheet_connector, row):
             
             col_index = i // 5 * 2
             formatted_row[col_index] = full_question
-            formatted_row[col_index + 1] = answer
+            formatted_row[col_index + 1] = f"回答: {answer}"
 
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
         range_spec = f"{encoded_sheet_name}!A1:F1"
@@ -96,7 +96,7 @@ def add_row_to_gsheet(gsheet_connector, row):
     except Exception as e:
          st.error(f"Error in add_row_to_gsheet: {str(e)}")
          st.exception(e)
-
+         
 def init_page():
     st.set_page_config(
         page_title="Ask My PDF(s)",
