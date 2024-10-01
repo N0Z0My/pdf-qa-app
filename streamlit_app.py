@@ -58,17 +58,6 @@ def connect_to_gsheet():
 
 def add_row_to_gsheet(gsheet_connector, row):
     try:
-        # シートの存在を確認
-        sheet_metadata = gsheet_connector.get(spreadsheetId=SHEET_ID).execute()
-        sheets = sheet_metadata.get('sheets', [])
-        sheet_names = [sheet['properties']['title'] for sheet in sheets]
-        
-        st.write(f"Debug - Available sheets: {sheet_names}")
-        
-        if SHEET_NAME not in sheet_names:
-            st.error(f"Sheet '{SHEET_NAME}' not found in the spreadsheet.")
-            return
-    try:
         string_row = [str(item) if item is not None else '' for item in row]
         
         st.write(f"Debug - SHEET_ID: {SHEET_ID}")
