@@ -28,7 +28,7 @@ COLLECTION_NAME = "my_collection_2"
 
 SCOPE = "https://www.googleapis.com/auth/spreadsheets"
 SHEET_ID = "16V9me0ByryDXxsupaVGlzB1fvWsQZ8EDw8CaO94AfiU"
-SHEET_NAME = "pdf_q_answer"
+SHEET_NAME = "sheet1"
 
 @st.cache_resource(ttl=1)
 def connect_to_gsheet():
