@@ -34,7 +34,7 @@ def connect_to_gsheet():
     st.write("GCS connection info:", st.secrets.get("connections.gcs", "Not found"))
     # Create a connection object
     credentials = service_account.Credentials.from_service_account_info(
-        st.secrets["connections.gcs"], scopes=[SCOPE]
+        st.secrets["connections"]["gcs"], scopes=[SCOPE]
     )
 
     # Create a new Http() object for every request
