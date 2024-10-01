@@ -50,9 +50,9 @@ def connect_to_gsheet():
     )
 
     service = build("sheets", "v4", requestBuilder=build_request, http=authorized_http)
-    gsheet_connector = service.spreadsheets()
-
-    return gsheet_connector
+    #gsheet_connector = service.spreadsheets()
+    return service.spreadsheets() 
+    #return gsheet_connector
 
 def add_row_to_gsheet(gsheet_connector, row):
     gsheet_connector.values().append(
@@ -179,7 +179,7 @@ def ask(qa, query):
     return answer, cb.total_cost
 
 
-def page_ask_my_pdf():
+def page_ask_my_pdf(gsheet_connector):
     st.title("Ask My PDF(s)")
 
     llm = select_model()
