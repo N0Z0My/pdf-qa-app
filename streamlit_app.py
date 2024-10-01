@@ -70,18 +70,24 @@ def add_row_to_gsheet(gsheet_connector, row):
         
         # 質問と回答を分離して整形
         lines = content.split('\n')
-        formatted_row = []
+        questions = []
+        answers = []
         
         for i in range(0, len(lines), 4):  # 4行ごとに処理（質問、選択肢A、選択肢B、回答）
             if i + 3 < len(lines):
                 question = lines[i].strip()
-                options = lines[i + 1].strip() + '\n' + lines[i + 2].strip()
+                options = f"{lines[i + 1].strip()}\n{lines[i + 2].strip()}"
+                full_question = f"{question}\n{options}"
                 answer = lines[i + 3].strip()
                 
-                formatted_row.extend([f"{question}\n{options}", answer])
+                questions.append(full_question)
+                answers.append(answer)
         
-        # 6列になるようにパディング
-        formatted_row.extend([''] * (6 - len(formatted_row)))
+        # 3つの質問と3つの回答になるようにパディング
+        questions.extend([''] * (3 - len(questions)))
+        answers.extend([''] * (3 - len(answers)))
+
+        formatted_row = questions + answers
 
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
         range_spec = f"{encoded_sheet_name}!A1:F1"
