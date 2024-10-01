@@ -32,8 +32,8 @@ SHEET_NAME = "sheet1"
 
 @st.cache_resource(ttl=1)
 def connect_to_gsheet():
-    st.write("Secrets structure:", st.secrets.keys())
-    st.write("Connections structure:", st.secrets.get("connections", {}).keys())
+    #st.write("Secrets structure:", st.secrets.keys())
+    #st.write("Connections structure:", st.secrets.get("connections", {}).keys())
     # Create a connection object
     credentials = service_account.Credentials.from_service_account_info(
         st.secrets["connections"]["gcs"], scopes=[SCOPE]
@@ -63,8 +63,8 @@ def add_row_to_gsheet(gsheet_connector, row):
         sheets = sheet_metadata.get('sheets', [])
         sheet_names = [sheet['properties']['title'] for sheet in sheets]
         
-        st.write(f"Debug - Available sheets: {sheet_names}")
-        st.write(f"Debug - Target sheet name: {SHEET_NAME}")
+        #st.write(f"Debug - Available sheets: {sheet_names}")
+        #st.write(f"Debug - Target sheet name: {SHEET_NAME}")
         
         if SHEET_NAME not in sheet_names:
             st.error(f"Sheet '{SHEET_NAME}' not found in the spreadsheet.")
@@ -72,14 +72,14 @@ def add_row_to_gsheet(gsheet_connector, row):
 
         string_row = [str(item) if item is not None else '' for item in row]
         
-        st.write(f"Debug - SHEET_ID: {SHEET_ID}")
-        st.write(f"Debug - SHEET_NAME: {SHEET_NAME}")
-        st.write(f"Debug - Row data: {string_row}")
+        #st.write(f"Debug - SHEET_ID: {SHEET_ID}")
+        #st.write(f"Debug - SHEET_NAME: {SHEET_NAME}")
+        #st.write(f"Debug - Row data: {string_row}")
         
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
         range_spec = f"{encoded_sheet_name}!A1:C1"
         
-        st.write(f"Debug - Encoded range: {range_spec}")
+        #st.write(f"Debug - Encoded range: {range_spec}")
         
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
@@ -88,7 +88,7 @@ def add_row_to_gsheet(gsheet_connector, row):
             valueInputOption="USER_ENTERED",
         ).execute()
         
-        st.write(f"Debug - API response: {result}")
+        #st.write(f"Debug - API response: {result}")
         st.success("Data successfully added to Google Sheets")
     except Exception as e:
          st.error(f"Error in add_row_to_gsheet: {str(e)}")
