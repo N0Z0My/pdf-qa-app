@@ -57,20 +57,24 @@ def connect_to_gsheet():
 
 def add_row_to_gsheet(gsheet_connector, row):
     try:
-        # 各項目を文字列に変換
         string_row = [str(item) if item is not None else '' for item in row]
         
-        gsheet_connector.values().append(
+        st.write(f"Debug - SHEET_ID: {SHEET_ID}")
+        st.write(f"Debug - SHEET_NAME: {SHEET_NAME}")
+        st.write(f"Debug - Row data: {string_row}")
+        
+        result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
-            range=f"{SHEET_NAME}!A:C",
+            range=f"'{SHEET_NAME}'!A:C",
             body=dict(values=[string_row]),
             valueInputOption="USER_ENTERED",
         ).execute()
+        
+        st.write(f"Debug - API response: {result}")
         st.success("Data successfully added to Google Sheets")
     except Exception as e:
         st.error(f"Error in add_row_to_gsheet: {str(e)}")
         st.exception(e)
-
 
 def init_page():
     st.set_page_config(
