@@ -30,8 +30,8 @@ SHEET_NAME = "pdf_q_answer"
 
 @st.cache_resource(ttl=1)
 def connect_to_gsheet():
-    st.write("Secrets content:", st.secrets)
-    st.write("GCS connection info:", st.secrets.get("connections.gcs", "Not found"))
+    st.write("Secrets structure:", st.secrets.keys())
+    st.write("Connections structure:", st.secrets.get("connections", {}).keys())
     # Create a connection object
     credentials = service_account.Credentials.from_service_account_info(
         st.secrets["connections"]["gcs"], scopes=[SCOPE]
