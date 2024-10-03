@@ -69,20 +69,19 @@ def add_row_to_gsheet(gsheet_connector, row):
         _, content = row
         
         # 質問を分離して整形
-        lines = content.split('\n')
-        formatted_rows = [[''] * 2 for _ in range(3)]  # 3行2列の空の2次元リストを用意
+        questions = content.split('質問')
+        formatted_rows = []
         
-        for i in range(0, min(len(lines), 15), 5):  # 最大3つの質問に対応（各質問は5行）
-            row_index = i // 5
-            question = lines[i].strip()
-            options = f"{lines[i + 1].strip()}\n{lines[i + 2].strip()}\n{lines[i + 3].strip()}"
-            full_question = f"{question}\n{options}"
+        for question in questions[1:]:  # 最初の空要素をスキップ
+            lines = question.strip().split('\n')
+            question_text = f"質問{lines[0]}"
+            options = '\n'.join(line.strip() for line in lines[1:] if line.strip())
+            full_question = f"{question_text}\n\n{options}"
             
-            formatted_rows[row_index][0] = full_question
-            formatted_rows[row_index][1] = "回答："
+            formatted_rows.append([full_question, "回答："])
 
         encoded_sheet_name = urllib.parse.quote(SHEET_NAME)
-        range_spec = f"{encoded_sheet_name}!A1:B3"
+        range_spec = f"{encoded_sheet_name}!A1:B{len(formatted_rows)}"
         
         result = gsheet_connector.values().append(
             spreadsheetId=SHEET_ID,
